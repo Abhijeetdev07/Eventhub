@@ -77,7 +77,7 @@ Start the React app:
 npm run dev
 ```
 
-The app should now be running at `http://localhost:5173`!
+app run on : localhost:5173
 
 ---
 
