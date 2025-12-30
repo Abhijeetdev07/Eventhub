@@ -2,10 +2,10 @@
 
 Welcome to the **Mini Event Platform**! This is a full-stack web application I built to help users discover, create, and join events seamlessly. It's designed to be robust, responsive, and easy to use.
 
-## 🚀 Live Demo
+##  Live Demo
 **[https://eventhub-gold.vercel.app/]**
 
-## ✨ Features
+##  Features
 I implemented all the mandatory requirements plus several advanced enhancements to make the experience better.
 
 ### Core Features
@@ -15,19 +15,20 @@ I implemented all the mandatory requirements plus several advanced enhancements 
 *   **RSVP System**: Users can join (or leave) events. The system ensures you can't join if the event is full.
 *   **Responsive Design**: Works perfectly on mobile, tablet, and desktop.
 
-### 🌟 Extra Enhancements (Bonus)
+###  Extra Enhancements (Bonus)
 I went the extra mile to add these features:
 1.  AI-Powered Assistant: Integrated **Groq AI (Llama 3)** to help users write professional event descriptions with one click.
    (All Events desc are ai generated)
 3.   Smart Search & Filters: Find events quickly by searching for keywords, filtering by category, or selecting a date range.
 4.   Dedicated User Dashboard: A personalized dashboard that separates "Events I'm Attending" from "Events I Created" for better organization.
 5.   Modern UI/UX: Used Tailwind CSS for a clean look, interactive modals, and smooth transitions.
-6.   User : created a demo user 3 user
+6.   Used *bcrypt* for a password-hashing function used to securely store passwords. It and from prevent brute-force attacks.
+7.   User : created a demo user 3 user
 5.   Demo Events :created a demo events
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 *   **Frontend**: React.js, Tailwind CSS, React Router, Axios
 *   **Backend**: Node.js, Express.js
 *   **Database**: MongoDB (Atlas)
@@ -35,10 +36,7 @@ I went the extra mile to add these features:
 *   **AI Service**: Groq API (Llama 3.1)
 
 ---
-
-## ⚙️ How to Run Locally
-
-given below
+### setup  given below
 
 ### 1. clone the repository
 ```bash
@@ -84,7 +82,7 @@ app run on : localhost:5173
 
 ---
 
-## 🧠 Technical Explanation: Handling RSVP Concurrency
+##  Technical Explanation: Handling RSVP Concurrency
 
 One of the robust features of this application is how it handles **Race Conditions** when multiple users try to join an event at the exact same time (e.g., only 1 spot left).
 
