@@ -162,7 +162,7 @@ export default function EventDetails() {
     <div className="mx-auto w-full max-w-6xl space-y-8">
       {/* Hero Section */}
       {/* Hero Section (Image Slider) */}
-      <div className="relative h-[500px] w-full overflow-hidden rounded-2xl bg-gray-100 md:h-[400px] group">
+      <div className="relative h-[500px] w-full overflow-hidden rounded-2xl bg-gray-100 md:h-[500px] group">
         {(() => {
           // Normalize images to array
           const images = event.images && event.images.length > 0
