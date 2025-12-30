@@ -17,10 +17,12 @@ I implemented all the mandatory requirements plus several advanced enhancements 
 
 ### 🌟 Extra Enhancements (Bonus)
 I went the extra mile to add these features:
-1.  **🤖 AI-Powered Assistant**: Integrated **Groq AI (Llama 3)** to help users write professional event descriptions with one click.
-2.  **🔍 Smart Search & Filters**: Find events quickly by searching for keywords, filtering by category, or selecting a date range.
-3.  **📊 Dedicated User Dashboard**: A personalized dashboard that separates "Events I'm Attending" from "Events I Created" for better organization.
-4.  **💎 Modern UI/UX**: Used **Tailwind CSS** for a clean look, interactive modals, and smooth transitions.
+1.  AI-Powered Assistant: Integrated **Groq AI (Llama 3)** to help users write professional event descriptions with one click.
+2.   Smart Search & Filters: Find events quickly by searching for keywords, filtering by category, or selecting a date range.
+3.   Dedicated User Dashboard: A personalized dashboard that separates "Events I'm Attending" from "Events I Created" for better organization.
+4.   Modern UI/UX: Used Tailwind CSS for a clean look, interactive modals, and smooth transitions.
+6.   User : created a demo user 3 user
+5.   Demo Events :created a demo events
 
 ---
 
