@@ -87,7 +87,12 @@ export default function EventForm({ event = null, onClose, onSuccess }) {
             fd.append('location', location);
             fd.append('capacity', String(capacity));
             if (category) fd.append('category', category);
-            if (imageFile) fd.append('image', imageFile);
+
+            if (imageFile && imageFile.length > 0) {
+                Array.from(imageFile).forEach((file) => {
+                    fd.append('images', file);
+                });
+            }
 
             await (isEdit ? updateEvent(event._id, fd) : createEvent(fd));
             if (onSuccess) onSuccess();
@@ -229,14 +234,38 @@ export default function EventForm({ event = null, onClose, onSuccess }) {
 
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                        {isEdit ? 'Replace Image (optional)' : 'Event Image'}
+                        {isEdit ? 'Replace Images (optional)' : 'Event Images (Max 5, 3MB ea)'}
                     </label>
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                        multiple
+                        onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            if (files.length > 5) {
+                                alert('You can upload a maximum of 5 images');
+                                e.target.value = '';
+                                setImageFile([]);
+                                return;
+                            }
+
+                            const oversized = files.filter(f => f.size > 3 * 1024 * 1024);
+                            if (oversized.length > 0) {
+                                alert('Each image must be less than 3MB');
+                                e.target.value = '';
+                                setImageFile([]);
+                                return;
+                            }
+
+                            setImageFile(files);
+                        }}
                         className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                     />
+                    {imageFile && imageFile.length > 0 && (
+                        <div className="mt-2 text-xs text-gray-600">
+                            {imageFile.length} image(s) selected
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-6 flex justify-end gap-3 border-t border-gray-100 pt-4">

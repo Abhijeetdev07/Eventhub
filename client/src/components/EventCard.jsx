@@ -5,23 +5,27 @@ export default function EventCard({ event, isOwner, onEdit }) {
     return (
         <div className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md hover:border-indigo-200">
             {/* Event Image */}
-            {event.imageUrl && (
-                <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+            <div className="relative h-48 w-full overflow-hidden bg-gray-200">
+                {(event.images?.[0]?.url || event.imageUrl) ? (
                     <img
-                        src={event.imageUrl}
+                        src={event.images?.[0]?.url || event.imageUrl}
                         alt={event.title}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    {/* Category Badge */}
-                    {event.category && (
-                        <div className="absolute top-3 right-3">
-                            <span className="inline-flex items-center rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white shadow-lg">
-                                {event.category}
-                            </span>
-                        </div>
-                    )}
-                </div>
-            )}
+                ) : (
+                    <div className="flex h-full w-full items-center justify-center text-gray-400">
+                        <span className="text-3xl">🎉</span>
+                    </div>
+                )}
+                {/* Category Badge */}
+                {event.category && (
+                    <div className="absolute top-3 right-3">
+                        <span className="inline-flex items-center rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white shadow-lg">
+                            {event.category}
+                        </span>
+                    </div>
+                )}
+            </div>
 
             {/* Card Content */}
             <div className="p-5">
@@ -61,7 +65,6 @@ export default function EventCard({ event, isOwner, onEdit }) {
                     </div>
                 )}
 
-                {/* View Details Button */}
                 {/* Action Buttons */}
                 <div className="flex gap-2">
                     <Link

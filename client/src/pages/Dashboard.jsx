@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { HiSearch, HiFilter } from 'react-icons/hi';
+import { HiSearch, HiFilter, HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import { listEvents } from '../api/eventApi';
 import { useDebounce } from '../hooks/useDebounce';
 import EventCard from '../components/EventCard';
@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [category, setCategory] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
   // Debounce search to avoid too many API calls
   const debouncedSearch = useDebounce(search, 500);
@@ -35,13 +36,7 @@ export default function Dashboard() {
     return [...new Set(categories)].sort();
   }, [events]);
 
-  // Calculate stats
-  const stats = useMemo(() => {
-    return {
-      total: upcomingEvents.length,
-      categories: uniqueCategories.length,
-    };
-  }, [upcomingEvents, uniqueCategories]);
+
 
   // Load events from API
   useEffect(() => {
@@ -96,31 +91,31 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Stats */}
-        {!isLoading && (
-          <div className="hidden sm:flex gap-4">
-            <div className="rounded-lg bg-indigo-50 px-4 py-2 text-center">
-              <div className="text-2xl font-bold text-indigo-600">{stats.total}</div>
-              <div className="text-xs text-gray-600">Events</div>
-            </div>
-            <div className="rounded-lg bg-purple-50 px-4 py-2 text-center">
-              <div className="text-2xl font-bold text-purple-600">{stats.categories}</div>
-              <div className="text-xs text-gray-600">Categories</div>
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Filters Section */}
       <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-700">
-          <HiFilter className="h-4 w-4" />
-          <span>Filter Events</span>
+        <div className="flex items-center justify-between gap-2 text-sm font-medium text-gray-700">
+          <div className="flex items-center gap-2">
+            <HiFilter className="h-4 w-4" />
+            <span>Filter Events</span>
+          </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="rounded-lg p-1 text-gray-500 hover:bg-gray-100 sm:hidden"
+          >
+            {showFilters ? (
+              <HiChevronUp className="h-5 w-5" />
+            ) : (
+              <HiChevronDown className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
-        <div className="space-y-3">
+        <div className={`space-y-3 ${showFilters ? 'block' : 'hidden'} sm:block`}>
           {/* Row 1: Category and Search */}
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -146,24 +141,24 @@ export default function Dashboard() {
           </div>
 
           {/* Row 2: Date Filters and Clear */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-600">From</label>
+              <label className="text-sm font-medium text-gray-600 w-10 sm:w-auto">From</label>
               <input
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
                 type="date"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 sm:flex-none"
               />
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-600">To</label>
+              <label className="text-sm font-medium text-gray-600 w-10 sm:w-auto">To</label>
               <input
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
                 type="date"
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 sm:flex-none"
               />
             </div>
 

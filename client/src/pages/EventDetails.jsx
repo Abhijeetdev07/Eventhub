@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import EventSidebar from '../components/EventSidebar';
 
 import { deleteEvent, getEventById } from '../api/eventApi';
 import { rsvpJoin, rsvpLeave } from '../api/rsvpApi';
@@ -17,6 +18,7 @@ export default function EventDetails() {
   const [isAttending, setIsAttending] = useState(false);
   const [actionError, setActionError] = useState('');
   const [isActionLoading, setIsActionLoading] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const isOwner = useMemo(() => {
     if (!auth?.user?.id || !event?.createdBy) return false;
@@ -157,74 +159,128 @@ export default function EventDetails() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <h2 className="text-2xl font-bold">{event.title}</h2>
+    <div className="mx-auto w-full max-w-6xl space-y-8">
+      {/* Hero Section */}
+      {/* Hero Section (Image Slider) */}
+      <div className="relative h-[300px] w-full overflow-hidden rounded-2xl bg-gray-100 md:h-[400px] group">
+        {(() => {
+          // Normalize images to array
+          const images = event.images && event.images.length > 0
+            ? event.images
+            : event.imageUrl
+              ? [{ url: event.imageUrl }]
+              : [];
 
-        {event.imageUrl ? (
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="mt-4 w-full rounded-xl border border-gray-200"
-          />
-        ) : null}
+          if (images.length === 0) {
+            return (
+              <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400">
+                <span className="text-lg">No Image Available</span>
+              </div>
+            );
+          }
 
-        <div className="mt-2 text-gray-700">Location: {event.location}</div>
-        <div className="mt-1 text-gray-700">Date: {event.dateTime ? new Date(event.dateTime).toLocaleString() : ''}</div>
-        <div className="mt-1 text-gray-700">
-          Capacity: {event.rsvpCount}/{event.capacity}
+          return (
+            <>
+              {/* Main Image */}
+              <img
+                src={images[activeImageIndex]?.url || images[0].url}
+                alt={event.title}
+                className="h-full w-full object-cover transition-opacity duration-500"
+              />
+
+              {/* Slider Controls (only if > 1 image) */}
+              {images.length > 1 && (
+                <>
+                  {/* Left Arrow */}
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md backdrop-blur-sm transition-all hover:bg-white focus:outline-none opacity-0 group-hover:opacity-100"
+                  >
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  </button>
+
+                  {/* Right Arrow */}
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 shadow-md backdrop-blur-sm transition-all hover:bg-white focus:outline-none opacity-0 group-hover:opacity-100"
+                  >
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
+
+                  {/* Dots Indicator */}
+                  <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+                    {images.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={`h-2 w-2 rounded-full transition-all ${idx === activeImageIndex ? 'bg-white w-4' : 'bg-white/50'}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          );
+        })()}
+
+        <div className="absolute top-4 right-4 z-10">
+          <span className="inline-flex items-center rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold text-indigo-600 shadow-sm backdrop-blur-sm">
+            {event.category}
+          </span>
         </div>
-        <div className='mt-1 text-gray-700'>Description :</div>
-        <div className=" whitespace-pre-wrap text-gray-900">{event.description}</div>
+      </div>
 
-        {actionError ? <div className="mt-3 text-sm text-red-700">{actionError}</div> : null}
-
-        {auth?.isAuthenticated ? (
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            {!isAttending ? (
-              <button
-                type="button"
-                disabled={isActionLoading || isFull}
-                onClick={handleJoin}
-                className="w-full rounded-lg bg-green-600 px-3 py-2 text-white disabled:opacity-60 sm:w-auto"
-              >
-                {isActionLoading ? 'Booking...' : isFull ? 'Event Full' : 'Book Event'}
-              </button>
-            ) : (
-              <button
-                type="button"
-                disabled={isActionLoading}
-                onClick={handleLeave}
-                className="w-full rounded-lg bg-red-600 px-3 py-2 text-white disabled:opacity-60 sm:w-auto"
-              >
-                {isActionLoading ? 'Cancelling...' : 'Cancel Booking'}
-              </button>
-            )}
-
-            {isOwner ? (
-              <>
-                <Link to={`/events/${event._id}/edit`} className="text-blue-600 hover:underline">
-                  Edit
-                </Link>
-                <button
-                  type="button"
-                  disabled={isActionLoading}
-                  onClick={handleDelete}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-left disabled:opacity-60 sm:w-auto sm:text-center"
-                >
-                  Delete
-                </button>
-              </>
-            ) : null}
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">{event.title}</h1>
+            <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+              <span>Posted on {new Date(event.createdAt).toLocaleDateString()}</span>
+            </div>
           </div>
-        ) : (
-          <div className="mt-4 text-sm text-gray-700">
-            <Link to="/login" className="text-blue-600 hover:underline">
-              Login
-            </Link>{' '}
-            to RSVP.
+
+          {/* Mobile Sidebar (Visible only on mobile/tablet) */}
+          <div className="lg:hidden">
+            <EventSidebar
+              event={event}
+              isFull={isFull}
+              isAttending={isAttending}
+              isOwner={isOwner}
+              actionError={actionError}
+              isActionLoading={isActionLoading}
+              auth={auth}
+              handleJoin={handleJoin}
+              handleLeave={handleLeave}
+              handleDelete={handleDelete}
+              navigate={navigate}
+            />
           </div>
-        )}
+
+          <div className="prose max-w-none">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">About this Event</h3>
+            <div className="whitespace-pre-wrap text-gray-600 leading-relaxed">
+              {event.description}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Sidebar (Visible only on large screens) */}
+        <div className="hidden lg:block space-y-6">
+          <EventSidebar
+            event={event}
+            isFull={isFull}
+            isAttending={isAttending}
+            isOwner={isOwner}
+            actionError={actionError}
+            isActionLoading={isActionLoading}
+            auth={auth}
+            handleJoin={handleJoin}
+            handleLeave={handleLeave}
+            handleDelete={handleDelete}
+            navigate={navigate}
+          />
+        </div>
       </div>
     </div>
   );

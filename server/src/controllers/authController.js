@@ -16,7 +16,7 @@ function createToken(user) {
       email: user.email,
     },
     secret,
-    { expiresIn: '7d' }
+    { expiresIn: process.env.JWT_EXPIRE || '30d' }
   );
 }
 

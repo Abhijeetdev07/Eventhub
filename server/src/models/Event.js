@@ -26,16 +26,12 @@ const eventSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
-    imageUrl: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    imagePublicId: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    images: [
+      {
+        url: { type: String, required: true },
+        publicId: { type: String, required: true },
+      },
+    ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

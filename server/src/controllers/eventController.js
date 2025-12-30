@@ -17,11 +17,17 @@ async function createEvent(req, res) {
       });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ message: 'Image file is required' });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: 'At least one image is required' });
     }
 
-    const { imageUrl, imagePublicId } = await uploadEventImage(req.file);
+    const imagePromises = req.files.map((file) => uploadEventImage(file));
+    const uploadedImages = await Promise.all(imagePromises);
+
+    const images = uploadedImages.map((img) => ({
+      url: img.imageUrl,
+      publicId: img.imagePublicId,
+    }));
 
     const event = await Event.create({
       title: title.trim(),
@@ -29,8 +35,7 @@ async function createEvent(req, res) {
       dateTime: new Date(dateTime),
       location: location.trim(),
       capacity: Number(capacity),
-      imageUrl,
-      imagePublicId,
+      images,
       category: category.trim(),
       createdBy: req.user.id,
       rsvpCount: 0,
@@ -38,7 +43,7 @@ async function createEvent(req, res) {
 
     return res.status(201).json(event);
   } catch (err) {
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error: ' + err.message });
   }
 }
 
@@ -129,28 +134,39 @@ async function updateEvent(req, res) {
       }
     }
 
-    let oldPublicId;
+    let oldImages = [];
 
-    if (req.file) {
-      oldPublicId = event.imagePublicId;
-      const { imageUrl, imagePublicId } = await uploadEventImage(req.file);
+    if (req.files && req.files.length > 0) {
+      // Store old images to delete later
+      if (event.images && event.images.length > 0) {
+        oldImages = [...event.images];
+      } else if (event.imagePublicId) {
+        // Fallback for old schema
+        oldImages.push({ publicId: event.imagePublicId });
+      }
 
-      event.imageUrl = imageUrl;
-      event.imagePublicId = imagePublicId;
+      const imagePromises = req.files.map((file) => uploadEventImage(file));
+      const uploadedImages = await Promise.all(imagePromises);
+
+      event.images = uploadedImages.map((img) => ({
+        url: img.imageUrl,
+        publicId: img.imagePublicId,
+      }));
+      // Clean up legacy fields if they exist
+      event.imageUrl = undefined;
+      event.imagePublicId = undefined;
     }
 
     await event.save();
 
-    if (
-      oldPublicId &&
-      process.env.CLOUDINARY_CLOUD_NAME &&
-      process.env.CLOUDINARY_API_KEY &&
-      process.env.CLOUDINARY_API_SECRET
-    ) {
-      try {
-        await cloudinary.uploader.destroy(oldPublicId);
-      } catch (err) {
-        // Best-effort cleanup; do not fail the request after DB has been updated
+    // Clean up old images from Cloudinary
+    if (oldImages.length > 0) {
+      for (const img of oldImages) {
+        if (img.publicId) {
+          try {
+            await cloudinary.uploader.destroy(img.publicId);
+          } catch (e) { /* ignore */ }
+        }
       }
     }
 
@@ -172,17 +188,28 @@ async function deleteEvent(req, res) {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
+    // Collect all public IDs to delete
+    const publicIdsToDelete = [];
+    if (event.images && event.images.length > 0) {
+      event.images.forEach(img => {
+        if (img.publicId) publicIdsToDelete.push(img.publicId);
+      });
+    }
+    // Legacy support
+    if (event.imagePublicId) {
+      publicIdsToDelete.push(event.imagePublicId);
+    }
+
     if (
-      event.imagePublicId &&
+      publicIdsToDelete.length > 0 &&
       process.env.CLOUDINARY_CLOUD_NAME &&
       process.env.CLOUDINARY_API_KEY &&
       process.env.CLOUDINARY_API_SECRET
     ) {
-      try {
-        await cloudinary.uploader.destroy(event.imagePublicId);
-      } catch (err) {
-        return res.status(500).json({ message: 'Failed to delete image from Cloudinary' });
-      }
+      const deletePromises = publicIdsToDelete.map(id =>
+        cloudinary.uploader.destroy(id).catch(() => { })
+      );
+      await Promise.all(deletePromises);
     }
 
     await Rsvp.deleteMany({ eventId: event._id });

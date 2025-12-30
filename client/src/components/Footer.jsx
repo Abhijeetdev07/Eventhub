@@ -27,8 +27,8 @@ export default function Footer() {
                             <Link to="/" className="text-sm text-gray-300 hover:text-indigo-400 transition-colors">
                                 Browse Events
                             </Link>
-                            <Link to="/events/new" className="text-sm text-gray-300 hover:text-indigo-400 transition-colors">
-                                Create Event
+                            <Link to="/my-events" className="text-sm text-gray-300 hover:text-indigo-400 transition-colors">
+                                My Events
                             </Link>
                             <Link to="/me" className="text-sm text-gray-300 hover:text-indigo-400 transition-colors">
                                 My Dashboard
