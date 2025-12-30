@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { HiCalendar, HiMenu, HiX, HiChevronDown } from 'react-icons/hi';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Navbar() {
@@ -34,11 +35,6 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-indigo-200">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-              </svg>
-            </div>
             <span className="text-xl font-bold tracking-tight text-gray-900">Event<span className="text-indigo-600">Hub</span></span>
           </Link>
 
@@ -53,13 +49,6 @@ export default function Navbar() {
 
             {auth?.isAuthenticated ? (
               <>
-                <Link
-                  to="/events/new"
-                  className={`text-sm font-medium transition-colors hover:text-indigo-600 ${isActive('/events/new') ? 'text-indigo-600' : 'text-gray-600'}`}
-                >
-                  Create Event
-                </Link>
-
                 {/* Profile Dropdown */}
                 <div className="relative ml-4" ref={dropdownRef}>
                   <button
@@ -72,9 +61,7 @@ export default function Navbar() {
                     <span className="text-sm font-medium text-gray-700 max-w-[100px] truncate">
                       {auth.user?.name || 'User'}
                     </span>
-                    <svg className={`h-4 w-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <HiChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Dropdown Menu */}
@@ -90,6 +77,13 @@ export default function Navbar() {
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         My Dashboard
+                      </Link>
+                      <Link
+                        to="/my-events"
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        My Events
                       </Link>
                       <button
                         onClick={() => {
@@ -127,13 +121,9 @@ export default function Navbar() {
               aria-label="Main menu"
             >
               {isOpen ? (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <HiX className="h-6 w-6" />
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <HiMenu className="h-6 w-6" />
               )}
             </button>
           </div>
@@ -153,10 +143,10 @@ export default function Navbar() {
             {auth?.isAuthenticated ? (
               <>
                 <Link
-                  to="/events/new"
-                  className={`block rounded-md px-3 py-2 text-base font-medium ${isActive('/events/new') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}
+                  to="/my-events"
+                  className={`block rounded-md px-3 py-2 text-base font-medium ${isActive('/my-events') ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}
                 >
-                  Create Event
+                  My Events
                 </Link>
                 <Link
                   to="/me"

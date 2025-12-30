@@ -11,9 +11,9 @@ async function createEvent(req, res) {
   try {
     const { title, description, dateTime, location, capacity, category } = req.body;
 
-    if (!title || !description || !dateTime || !location || !capacity) {
+    if (!title || !description || !dateTime || !location || !capacity || !category) {
       return res.status(400).json({
-        message: 'title, description, dateTime, location, capacity are required',
+        message: 'title, description, dateTime, location, capacity, and category are required',
       });
     }
 
@@ -31,7 +31,7 @@ async function createEvent(req, res) {
       capacity: Number(capacity),
       imageUrl,
       imagePublicId,
-      category: category ? category.trim() : undefined,
+      category: category.trim(),
       createdBy: req.user.id,
       rsvpCount: 0,
     });
@@ -158,7 +158,7 @@ async function updateEvent(req, res) {
   } catch (err) {
     return res.status(500).json({ message: 'Server error' });
   }
- }
+}
 
 async function deleteEvent(req, res) {
   try {

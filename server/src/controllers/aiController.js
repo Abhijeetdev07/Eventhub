@@ -1,4 +1,4 @@
-const { generateEventDescription } = require('../services/geminiService');
+const { generateEventDescription } = require('../services/groqService');
 
 function clampText(text, maxLen) {
   if (!text) return '';
