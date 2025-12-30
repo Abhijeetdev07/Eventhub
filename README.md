@@ -105,12 +105,5 @@ I used **MongoDB Transactions** combined with **Atomic Updates** to ensure stric
     *   If the spot was taken milliseconds ago, the condition `{ $lt: event.capacity }` fails, no document is updated, and the transaction is aborted.
 4.  **Error Handling**: The backend catches this specific failure and returns a "Event is full" message to the user effectively preventing overbooking.
 
----
 
-## 📁 Source Code
-*   **Client**: React frontend logic.
-*   **Server**: Node/Express API and Database models.
-
----
-
-*Built with ❤️ by Abhijeet Ugale*
+*Built by me*
