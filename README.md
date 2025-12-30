@@ -3,7 +3,7 @@
 Welcome to the **Mini Event Platform**! This is a full-stack web application I built to help users discover, create, and join events seamlessly. It's designed to be robust, responsive, and easy to use.
 
 ## 🚀 Live Demo
-**[Insert Deployed URL Here]**
+**[https://eventhub-gold.vercel.app/]**
 
 ## ✨ Features
 I implemented all the mandatory requirements plus several advanced enhancements to make the experience better.
@@ -20,7 +20,7 @@ I went the extra mile to add these features:
 1.  **🤖 AI-Powered Assistant**: Integrated **Groq AI (Llama 3)** to help users write professional event descriptions with one click.
 2.  **🔍 Smart Search & Filters**: Find events quickly by searching for keywords, filtering by category, or selecting a date range.
 3.  **📊 Dedicated User Dashboard**: A personalized dashboard that separates "Events I'm Attending" from "Events I Created" for better organization.
-4.  **💎 Modern UI/UX**: Used **Tailwind CSS** for a clean look, added loading skeletons, interactive modals, and smooth transitions.
+4.  **💎 Modern UI/UX**: Used **Tailwind CSS** for a clean look, interactive modals, and smooth transitions.
 
 ---
 
@@ -35,11 +35,11 @@ I went the extra mile to add these features:
 
 ## ⚙️ How to Run Locally
 
-Follow these steps to set up the project on your machine.
+given below
 
 ### 1. clone the repository
 ```bash
-git clone https://github.com/Abhijeetdev07/event-management-mern.git
+git clone https://github.com/Abhijeetdev07/eventhub.git
 cd event-management-mern
 ```
 
@@ -51,14 +51,15 @@ npm install
 Create a `.env` file in the `server` folder with the following credentials:
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=your_mongodb
 JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRE=30d
 # Cloudinary for Images
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_CLOUD_NAME=your cloud name
+CLOUDINARY_API_KEY=your api key
+CLOUDINARY_API_SECRET=your api secret
 # Groq AI for Descriptions
-GROQ_API_KEY=your_groq_api_key
+GROQ_API_KEY=your ai key
 ```
 Start the server:
 ```bash
