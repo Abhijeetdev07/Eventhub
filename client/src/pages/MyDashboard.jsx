@@ -69,7 +69,7 @@ export default function MyDashboard() {
       {/* Events I'm Attending */}
       <div>
         {attending.length === 0 ? (
-          <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 py-12 text-center">
+          <div className="rounded-lg bg-gray-50 py-12 text-center">
             <HiTicket className="mx-auto h-12 w-12 text-gray-400" />
             <p className="mt-2 text-sm font-medium text-gray-900">No events joined yet</p>
             <p className="mt-1 text-sm text-gray-600">
